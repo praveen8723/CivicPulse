@@ -2,6 +2,8 @@ node_modules/
 .next/
 .next-netlify/
 next-env.d.ts
+public/maplibre-worker.mjs
+public/maplibre-gl-shared.mjs
 .env*
 !.env.example
 *.tsbuildinfo
