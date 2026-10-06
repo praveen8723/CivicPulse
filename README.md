@@ -4,7 +4,7 @@
 
 CivicPulse is an open source civic issue demo built for the WEBNOVA hackathon. It turns citizen reports in Bengaluru into a shared, ranked view of problems, connects repeat reports to one case, and shows the case’s progress to citizens and city teams.
 
-**Repository:** [github.com/praveen8723/CivicPulse](https://github.com/praveen8723/CivicPulse)
+**Live demo:** [civicpulse-praveen.netlify.app](https://civicpulse-praveen.netlify.app) · **Repository:** [github.com/praveen8723/CivicPulse](https://github.com/praveen8723/CivicPulse)
 
 > **Demo notice:** The cases, photos, statistics, authority roles, and updates in this app are illustrative. CivicPulse does not submit complaints to the government. Data you enter stays in your browser.
 
@@ -102,7 +102,7 @@ The seeded dataset contains 48 illustrative cases. Counts in the interface are c
 
 ### Deploy on Netlify
 
-The included [`netlify.toml`](netlify.toml) builds the Next.js app with `npm run build` and publishes `.next`; Netlify handles the server route through its Next.js runtime. Connect the GitHub repository in Netlify, keep the production branch as `main`, and use Node.js 22. Each push to `main` can then trigger a deployment. No environment variables are needed for the keyword analysis fallback. If you use an external analysis service, add its URL and key as Netlify environment variables.
+The included [`netlify.toml`](netlify.toml) builds the Next.js app with `npm run build` and publishes `.next-netlify`; Netlify handles the server route through its Next.js runtime. Netlify builds use a separate output directory so a local development server can stay open. The [live site](https://civicpulse-praveen.netlify.app) is published on Netlify. After signing in and linking this project with the Netlify CLI, run `npx netlify-cli deploy --prod` to publish a new build. To enable automatic deployments, connect this GitHub repository to the Netlify project and use `main` as the production branch. No environment variables are needed for the keyword analysis fallback. If you use an external analysis service, add its URL and key as Netlify environment variables.
 
 On Netlify, a local Ollama process is not bundled with the site. The server route falls back to the configured provider or keyword rules. The current 42-second local Ollama attempt may delay first-time analysis on hosted deployments; a production integration should use a reachable service with a short timeout.
 

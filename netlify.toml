@@ -1,6 +1,7 @@
 [build]
 command = "npm run build"
-publish = ".next"
+publish = ".next-netlify"
 
 [build.environment]
 NODE_VERSION = "22"
+CIVICPULSE_BUILD_DIR = ".next-netlify"

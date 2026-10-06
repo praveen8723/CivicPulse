@@ -1,5 +1,13 @@
 # Current redesign verification — 6 October 2026
 
+## Public release — 6 October 2026
+
+- Public source: [GitHub repository](https://github.com/praveen8723/CivicPulse), including the MIT license, setup guide, and screenshots.
+- Live deployment: [CivicPulse on Netlify](https://civicpulse-praveen.netlify.app). The Netlify Next.js runtime packaged the server route and published the production site.
+- Final local checks: TypeScript and ESLint passed; all 13 domain tests passed; the production Next.js build completed.
+- The live homepage, report page, authority page, analysis route, and demo video returned successful responses. The analysis route classified a pothole report using its local keyword fallback on Netlify.
+- The current site was deployed from the Netlify CLI. Git-triggered continuous deployment has not been configured.
+
 ## AI and official contact follow-up — 6 October 2026
 
 - Verified `POST /api/analyze` returned `source: "ollama"` and `Waterlogging` from the installed `llama3.2:latest` model on the local Ollama server. Cold model startup can take tens of seconds; keyword analysis is the fallback.
