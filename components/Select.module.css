@@ -1,0 +1,218 @@
+.root {
+  display: inline-flex;
+  position: relative;
+  min-width: 0;
+  vertical-align: middle;
+  max-width: 100%;
+}
+.native {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip-path: inset(50%);
+  border: 0 !important;
+  opacity: 0;
+  pointer-events: none;
+}
+.trigger {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 13px;
+  border: 1px solid #383838;
+  border-radius: 9px;
+  background: linear-gradient(135deg, #202020, #121212);
+  box-shadow: inset 0 1px 0 #ffffff08;
+  color: #eee;
+  font-size: 12px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    border-color 0.2s,
+    background 0.2s,
+    box-shadow 0.2s;
+}
+.trigger > span {
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.trigger:hover {
+  border-color: #636363;
+  background: #242424;
+}
+.trigger[aria-expanded="true"] {
+  border-color: #8a8a8a;
+  box-shadow: 0 0 0 3px #ffffff08;
+}
+.trigger:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.chevron {
+  margin-left: 7px;
+  color: #999;
+  transition: transform 0.2s;
+}
+.trigger[aria-expanded="true"] .chevron {
+  transform: rotate(180deg);
+  color: white;
+}
+.popup {
+  position: fixed;
+  z-index: 3000;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  padding: 7px;
+  border: 1px solid #444;
+  border-radius: 14px;
+  background: #191919f7;
+  box-shadow:
+    0 20px 65px #0009,
+    inset 0 1px 0 #ffffff0c;
+  backdrop-filter: blur(24px);
+  animation: arrive 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+  color: #eee;
+}
+.caption {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 15px;
+  padding: 9px 10px 13px;
+  color: #a4a4a4;
+  font-size: 10px;
+  font-weight: 500;
+}
+.caption > span {
+  background: #ffffff0a;
+  border-radius: 5px;
+  padding: 2px 6px;
+  font-variant-numeric: tabular-nums;
+}
+.search {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0 3px 8px;
+  padding: 0 10px;
+  background: #0e0e0e;
+  border: 1px solid #414141;
+  border-radius: 8px;
+  color: #929292;
+}
+.search input {
+  border: none;
+  outline: none;
+  background: transparent;
+  padding: 10px 0;
+  min-width: 0;
+  width: 100%;
+  font-size: 12px;
+  color: #fff;
+}
+.search input:focus-visible {
+  outline: none;
+}
+.search:focus-within {
+  border-color: #999;
+}
+.list {
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  scrollbar-width: thin;
+  scrollbar-color: #555 transparent;
+  padding: 2px;
+}
+.option {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 12px;
+  min-height: 42px;
+  border: 1px solid transparent;
+  border-radius: 8px;
+  font-size: 12px;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    border-color 0.15s;
+}
+.option > span {
+  flex: 1;
+}
+.option[aria-selected="true"] {
+  color: #fff;
+  background: #ffffff09;
+}
+.option.active {
+  border-color: #ffffff12;
+  background: #ffffff10;
+}
+.option > svg {
+  color: white;
+}
+.empty {
+  padding: 22px 12px;
+  text-align: center;
+  font-size: 12px;
+  color: #999;
+}
+.dot {
+  width: 6px;
+  height: 6px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  background: #aaa;
+}
+.dot[data-tone="critical"] {
+  background: var(--severity-critical);
+}
+.dot[data-tone="high"] {
+  background: var(--severity-high);
+}
+.dot[data-tone="medium"] {
+  background: var(--severity-medium);
+}
+.dot[data-tone="low"],
+.dot[data-tone="resolved"] {
+  background: var(--severity-low);
+}
+.dot[data-tone="reported"] {
+  background: #7dd3fc;
+}
+.dot[data-tone="assigned"] {
+  background: #a5b4fc;
+}
+.dot[data-tone="in-progress"] {
+  background: #fbbf24;
+}
+@keyframes arrive {
+  from {
+    opacity: 0;
+    transform: translateY(-5px) scale(0.985);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .popup {
+    animation: none;
+  }
+  .trigger,
+  .chevron,
+  .option {
+    transition: none;
+  }
+}

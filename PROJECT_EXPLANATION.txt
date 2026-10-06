@@ -1,0 +1,515 @@
+CIVICPULSE - COMPLETE PROJECT EXPLANATION
+=========================================
+Updated: 6 October 2026
+
+1. THE PROJECT IN ONE MINUTE
+----------------------------
+CivicPulse is a web application for reporting and managing city problems in
+Bengaluru. A citizen can describe a pothole, waste pile, waterlogging, broken
+streetlight, traffic problem, or another public issue. The app suggests the
+issue type, checks whether nearby people have already reported the same
+problem, gives the case a priority score, and shows its progress on a map.
+
+The authority workspace shows a ranked list of cases. A team can choose a
+department, update the status, and add a public progress note. The citizen can
+track the same case. To mark a case resolved, the demo requires an after-photo
+from the authority and a confirmation photo from a citizen.
+
+The current application is a working hackathon MVP (minimum viable product),
+not a live government service. Its starting cases and statistics are example
+data. It does not submit complaints to a government system.
+
+One-sentence pitch:
+"CivicPulse turns many reports about a city problem into one clear case, helps
+teams decide what needs attention first, and lets citizens see the progress."
+
+
+2. THE PROBLEM AND OUR IDEA
+---------------------------
+People often report the same problem separately. If six people report one
+pothole, a team may see six tickets rather than one problem supported by six
+reports. Important safety issues can get mixed with less urgent work. Citizens
+may not know which office to contact or whether a problem was actually fixed.
+
+CivicPulse addresses this with four simple ideas:
+
+* One problem should have one main case, even when many citizens report it.
+* Priority should have a visible explanation, not just a hidden number.
+* Each case should show a likely responsible public office and a contact path.
+* Progress and proof of a fix should be visible to citizens.
+
+The project is meant to support human decisions. A suggested category,
+priority, or office still needs review by the appropriate civic team.
+
+
+3. WHO USES IT
+--------------
+Citizen:
+* Reports an issue using text, an optional photo, and a location.
+* Sees whether the report joins an existing case.
+* Gets a case reference and a separate receipt for that particular report.
+* Follows the case status and public updates.
+* Can say "I'm affected too" once per browser for an open case.
+* Can upload a current photo to confirm that a problem was fixed.
+
+Authority user (simulated in this demo):
+* Sees the city map, ranked cases, counts, trends, and hotspots.
+* Filters the issue list and exports visible cases to CSV.
+* Opens a case, chooses a department, changes its status, and adds notes.
+* Uploads an after-photo when requesting resolution.
+
+There are no real authority accounts yet. Anyone who opens the authority view
+can use its controls in this local demo. "Internal notes" are a demo feature,
+not secure private records.
+
+
+4. WHAT THE MVP INCLUDES
+------------------------
+The essential MVP is one complete journey:
+
+1) A citizen describes and locates a problem.
+2) The app classifies the description with local AI when available.
+3) The app checks for a nearby existing case and calculates priority.
+4) The citizen registers the report.
+5) The case appears in the shared map and authority queue.
+6) The authority updates the case.
+7) The citizen tracks the update.
+8) Both sides provide after-photos before the case is shown as resolved.
+
+This complete journey is implemented. The 3D map, city tour, charts, CSV
+download, bilingual interface, and visual design help demonstrate and explore
+the MVP. They are useful features, but the reporting-to-resolution journey is
+the core product.
+
+
+5. HOW A REPORT WORKS, STEP BY STEP
+----------------------------------
+Step 1 - Describe the issue.
+The citizen enters at least 12 characters of text. They can attach a JPG, PNG,
+or WebP photo, or use the example pothole scenario. Voice input is available
+only if the browser supports speech recognition. The photo is optional for a
+new report. The app resizes uploaded images before saving them in the browser.
+
+Step 2 - Choose the location.
+The citizen can select a Bengaluru neighbourhood, allow browser location
+access, click or drag the map pin, or type coordinates and a nearby landmark.
+The app checks that the location values are valid. GPS is optional.
+
+Step 3 - Analyse the description.
+The browser sends the description to CivicPulse's /api/analyze server route.
+That route tries a locally running Ollama model. It returns a category, a
+short summary, and a confidence estimate. If Ollama is unavailable, an
+optional configured external provider can be tried. If that is also absent or
+fails, fixed keyword rules keep reporting usable. The analysis screen tells
+the user which source was used. The model does not inspect image pixels.
+
+Step 4 - Check for an existing case.
+The app compares the new report with open cases. A candidate must have the
+same category, be within 250 metres, have enough shared words in the
+description, and have been created within the last 30 days. A resolved case is
+not matched. If a suitable case exists, the citizen sees it before submitting.
+
+Step 5 - Give the issue a priority.
+CivicPulse calculates a score from 0 to 100 using visible rules. It considers
+the type of issue, safety words, words such as school or hospital, how many
+people reported or confirmed it, how long it has been open, and whether a
+newly reported case has waited over 48 hours. The factors are shown on the
+case page so a person can understand the score.
+
+Step 6 - Route and register.
+The category suggests an internal department, such as Roads & Infrastructure,
+Water Supply, or Traffic Management. The user presses Register complaint (or
+Add my report to this case). A new issue gets a case reference. Every submitted
+report also gets its own receipt, beginning with CR-. If it matches an existing
+issue, its report is attached to that case instead of opening another case.
+
+Step 7 - Review and track.
+The case appears in the city map, authority issue list, and tracker. The
+tracker accepts the short case number (for example, 892), the full reference,
+or a report receipt. The case page shows its status, timeline, location,
+linked reports, likely responsible office, and public contact options.
+
+Step 8 - Respond and resolve.
+The authority view can change the department and status, and publish a note.
+Status values are Reported, Assigned, In Progress, and Resolved. A request to
+resolve a case must include a newly uploaded authority after-photo. A citizen
+must also upload a current confirmation photo. These can arrive in either
+order. The case reaches Resolved only when both are present. If only one photo
+has arrived, the case remains open. A resolved case can later be reopened.
+
+
+6. CASES, REPORTS, AND REFERENCES
+--------------------------------
+A "case" is the main record for one problem at one place. A "report" is one
+citizen's submission. Several reports can point to the same case. For example,
+if one pothole already has six reports and another person reports it, the case
+count stays the same while its report count becomes seven.
+
+The interface displays easy labels such as "Pothole in Koramangala - Case
+892". Older internal references such as CP-2026-0892 still work in links.
+New cases use CASE- references internally. A CR- receipt identifies one
+particular citizen report, even when it was joined to an older case.
+
+The starting demo has 48 example cases, including two clearly labelled
+resolved examples. A browser with earlier saved demo data or new reports may
+show a different total. Reset demo restores the standard example state.
+
+
+7. WHERE AI IS USED, AND WHERE IT IS NOT
+---------------------------------------
+AI is integrated in report-text classification. By default, the Next.js server
+calls Ollama at http://127.0.0.1:11434 using llama3.2:latest. The browser
+does not call Ollama directly. The model is asked to return one of the app's
+allowed issue categories, a short summary, and a confidence estimate. The
+server validates the response before using it.
+
+The app supports these 12 categories:
+Pothole; Road Damage; Garbage / Waste; Water Leakage; Waterlogging;
+Drainage / Sewage; Broken Streetlight; Fallen Tree; Traffic Signal;
+Traffic / Congestion; Public Property Damage; Other.
+
+If Ollama is stopped, slow, or gives an invalid answer, the app falls back to
+keyword matching. An optional external analysis provider can be configured
+between Ollama and the keyword fallback. The case page labels the source as
+Ollama, provider, or local keyword rules. A displayed confidence value is an
+estimate; it is not a measured guarantee of correctness.
+
+Priority scoring, duplicate detection, and department routing are transparent
+programmed rules. They are not claims that AI understood the whole street
+scene. Uploaded report photos are for human review; the current AI does not
+identify issues from photos.
+
+The default pictures for issue categories are generated illustrations. They
+are labelled as illustrations, not evidence from a real site. The two
+pre-resolved sample cases also show clearly labelled fictional after-images.
+For a newly reported case, real uploaded photos are displayed separately.
+
+
+8. HOW PRIORITY AND DUPLICATE DETECTION WORK
+--------------------------------------------
+Priority score (0 to 100):
+* Base risk depends on category. For example, a traffic signal starts higher
+  than damage to a bench.
+* Words suggesting danger or blocked access add 18 points.
+* School, hospital, and busy-junction wording adds 12 points.
+* Report volume and community confirmations add at most 15 points.
+* Time unresolved adds at most 10 points.
+* A case still at Reported after 48 hours adds 5 points.
+* The final total cannot exceed 100.
+
+The display bands are Low (0-29), Medium (30-54), High (55-79), and Critical
+(80-100). The score is a demo aid for sorting work. It is not a government
+severity rating. Actual danger must be assessed by people on the ground.
+
+Duplicate detection checks category, distance, age, and overlapping words.
+Distance is calculated from coordinates, so the method is more precise when
+the location is accurate. Word matching currently works best for English
+descriptions. A production version should support better multilingual
+matching, a human review queue, and a way to separate cases that were merged
+incorrectly.
+
+
+9. MAIN SCREENS AND FEATURES
+----------------------------
+Home (/): Short introduction and an entry point to reporting or the city
+workspace. Its numbers come from the browser's current case data.
+
+Citizen workspace (/citizen): A city overview with active cases, critical
+cases, citizen reports, and resolved cases. It also shows a map and a ranked
+list. The city tour moves across selected priority cases. The hotspot view
+shows report density.
+
+Report issue (/report): Four stages - issue, location, analysis, and
+registered. It supports a photo, location selection, an AI or fallback
+analysis result, duplicate preview, and a final tracking reference.
+
+City map (/map): A map plus a case list. Users can search or filter by
+category, severity, and status, and switch between markers and a heatmap.
+The 3D map uses MapLibre; a 2D compatibility map is available when needed.
+
+Tracker (/track): Search for a case number, full reference, or report receipt.
+The detail page shows its timeline, analysis factors, linked reports, contact
+information, location, photos, and resolution evidence.
+
+Authority dashboard (/authority): The same underlying cases viewed as a
+work queue. It shows priority signals, department workload, maps, and trends.
+
+Authority issue list (/authority/issues): Search, filter, sort, open a case,
+and export the visible list to CSV.
+
+Authority case page (/authority/issues/[id]): Change the department or status,
+add a public update and demo internal note, and upload an authority photo to
+request resolution.
+
+Language selection: The header can switch interface text between English and
+Kannada. The choice remains across pages and reloads. Case IDs, coordinates,
+official names, place names, and citizen-entered text are not translated.
+
+Other practical features: Responsive desktop and mobile layouts, photo
+preview, optional voice input, browser location, cross-tab updates, error and
+empty states, and a reset control for presentations.
+
+
+10. WHO IS RESPONSIBLE FOR AN ISSUE?
+------------------------------------
+The case page has a "Responsible public office" section. It suggests the
+likely agency and team based on the issue type. For example:
+
+* Potholes, waste, streetlights, fallen trees, and waterlogging suggest the
+  Greater Bengaluru Authority or the local city corporation.
+* Water supply leaks and many sewerage problems suggest BWSSB.
+* Traffic signals and congestion suggest Bengaluru Traffic Police.
+
+The section offers configured public phone numbers and links to official
+complaint sites or directories. The demo includes GBA's public grievance
+helpline 1533 and BWSSB's 1916. For traffic cases with a recognised area
+name, it suggests a traffic police station and its listed phone number.
+
+This is guidance on whom to contact. It does not identify a named officer,
+confirm exact jurisdiction, or file a complaint with that office. The agency
+must confirm who owns the specific road, drain, signal, or asset. Contact
+details should be checked again before any real deployment.
+
+
+11. ONLINE POSTS AND APPROXIMATE LOCATIONS
+------------------------------------------
+The current app does not automatically collect posts from Reddit, Instagram,
+or other social platforms. The earlier manual online-lead form was removed.
+An old /authority/online-leads bookmark now redirects to the issue list.
+Previously saved example leads can still appear in browser data; they are
+labelled unverified, and an area-based point is marked as approximate.
+
+Automatic collection is a possible future feature, but it needs permitted
+platform access, careful handling of personal data, and human review. An area
+name in a post is not an exact GPS location. Such a post should be treated as
+a lead for verification, not an official citizen report or a dispatch-ready
+location.
+
+
+12. TECHNICAL WORKING IN SIMPLE WORDS
+-------------------------------------
+The site is built with Next.js, React, and TypeScript. Next.js serves the web
+pages and the /api/analyze route. React keeps the screens updated when case
+data changes. MapLibre displays the city map; Leaflet helps with location
+picking and the 2D map. Recharts draws dashboard charts.
+
+Main data items:
+* Issue: the main case, including category, location, status, priority,
+  department, evidence, and counts.
+* Citizen report: one submitted description, optional photo, and receipt.
+* History: dated public status events for a case.
+* Note: a team note in the demo authority view.
+* Confirmation: a record that this browser has used "I'm affected too".
+
+The app begins with example cases. Changes are saved in this browser's local
+storage. Opening another tab at the same site in the same browser can see
+updates. Another device or browser does not share those changes. If site data
+is cleared or Reset demo is used, those local changes are lost. Large photos
+can fill browser storage, although the uploader resizes them first. Saved
+duplicate case IDs are repaired when data loads so case lists remain unique.
+
+Simple data flow:
+Citizen -> report form -> analysis API -> category and summary
+        -> duplicate check + priority rules + department suggestion
+        -> saved case/report -> map + tracker + authority workspace
+        -> authority update + citizen confirmation -> resolved case
+
+Useful source-code locations for a technical explanation:
+* app/api/analyze/route.ts - Ollama request and fallbacks.
+* services/issueClassifier.ts - keyword analysis and browser API call.
+* lib/priority.ts - priority score.
+* lib/duplicateDetection.ts - nearby-case matching.
+* lib/departmentRouting.ts and lib/responsibility.ts - routing and contacts.
+* services/issueRepository.ts - report, status, resolution, and saved data.
+* components/CivicProvider.tsx - shared browser state.
+* components/ReportFlow.tsx and components/IssueDetail.tsx - main journeys.
+
+
+13. HOW TO RUN AND DEMONSTRATE IT
+--------------------------------
+Requirements: Node.js 22 or newer, npm, and a modern web browser.
+
+In the project folder:
+  npm install
+  npm run dev
+
+Then open http://127.0.0.1:3000.
+
+For the local AI path, run Ollama on its default port and install the model:
+  ollama pull llama3.2
+  ollama serve
+
+The configured default model name is llama3.2:latest. If Ollama is already
+running, it is not necessary to start another server. The app still works
+without it through keyword fallback. .env.example shows the optional model,
+local URL, and external-provider settings.
+
+Useful project checks:
+  npm run typecheck
+  npm run lint
+  npm test
+  npm run test:e2e       (needs the local site and Chrome)
+  npm run build
+
+A short live presentation:
+1) Explain the problem: repeated complaints hide the real number of problems.
+2) Open the authority workspace and show its ranked cases and map.
+3) Open Report an issue and choose Use demo scenario.
+4) Select Koramangala 5th Block and analyse the school-zone pothole.
+5) Show its suggested category, priority, department, and nearby existing case.
+6) Add the report. Explain that one case now has an extra citizen report.
+7) Track that case, then open the authority view and publish a status update.
+8) Return to the tracker to show the same update.
+9) Explain the two-photo resolution rule and show a clearly labelled resolved
+   sample case if you do not want to upload photos during the presentation.
+
+Use Reset demo before a repeat presentation. It restores the original example
+cases and removes changes made in this browser's demo data.
+
+
+14. WHAT IS REAL, WHAT IS DEMO, AND WHAT COMES NEXT
+--------------------------------------------------
+Working now: The end-to-end local workflow, text classification with Ollama
+when it is available, keyword fallback, priority scoring, nearby-case
+matching, maps, public contact suggestions, bilingual interface selection,
+tracking, status updates, photo-based resolution, CSV export, and browser
+persistence.
+
+Demo boundaries: Starting cases and statistics are illustrative. Some photos
+are generated illustrations. Authority access is simulated. Data lives only
+in this browser. There is no government integration, production database,
+verified user identity, SMS/email delivery, automatic social-post collection,
+or AI photo recognition. The app cannot prove that a photo was taken at the
+reported location. Two tabs editing at the same time can overwrite each
+other's changes.
+
+Pilot steps: Add verified citizen and staff accounts; store data in a shared
+database with safe simultaneous updates; validate exact wards and public
+contacts; build official agency handoffs; add photo and location verification;
+measure classification and duplicate-matching accuracy; support more
+languages in report understanding; add notifications; and run a real
+accessibility and security review. Social-platform monitoring should only be
+considered with approved API access and a review process.
+
+
+15. EXPECTED QUESTIONS AND SIMPLE ANSWERS
+-----------------------------------------
+Q1. What is the main purpose of CivicPulse?
+A. It helps people report a city problem and helps teams see which problems
+   need attention. It combines repeat reports and shows progress to citizens.
+
+Q2. What is an MVP?
+A. It is the smallest working version that proves the main idea. Here, a
+   citizen can report, the app analyses and registers the case, an authority
+   can update it, and the citizen can track it through resolution.
+
+Q3. Is this a real government complaint portal?
+A. No. It is a local demonstration. It suggests public offices and provides
+   contact links, but it does not file cases in government systems.
+
+Q4. Where exactly is AI integrated?
+A. The /api/analyze server route sends the report description to local
+   Ollama. The model suggests a category and short summary. Other important
+   decisions, such as priority and duplicate detection, use visible rules.
+
+Q5. What happens if Ollama is not running?
+A. The report still works. The app can use an optional configured provider,
+   then its own keyword classifier. The screen labels the analysis source.
+
+Q6. Does AI analyse the uploaded photo?
+A. No. The text is analysed. Photos are shown as supporting evidence for
+   people to inspect.
+
+Q7. Why not let AI decide which issue is most urgent?
+A. The demo uses a clear score so users can see the reasons. Real urgency
+   still needs field assessment, and a pilot should test any scoring method.
+
+Q8. How is the priority score calculated?
+A. It starts with category risk, then adds points for safety words, sensitive
+   places, community volume, age, and response delay. It is capped at 100.
+
+Q9. Can many confirmations artificially raise priority?
+A. Their contribution is capped. The demo also allows one confirmation per
+   browser. Production needs accounts, rate limits, and abuse checks.
+
+Q10. How do you find duplicate reports?
+A. The app looks for an open case with the same category, within 250 metres,
+   from the last 30 days, with overlapping description words.
+
+Q11. What if two different issues are merged incorrectly?
+A. That is a known risk. A production version needs staff review and an
+   option to separate incorrectly joined reports.
+
+Q12. Why does a person receive both a case number and a report receipt?
+A. A case is the shared problem. A receipt identifies one person's report.
+   Several receipts can belong to the same case.
+
+Q13. Who is responsible for a case?
+A. The app suggests a department and likely public agency based on category.
+   The case page includes public phone and website details where configured.
+   The agency must confirm exact jurisdiction and asset ownership.
+
+Q14. Can the app show a traffic police station number?
+A. Yes, for several known Bengaluru area names it suggests a listed local
+   traffic station and phone number. The exact junction's jurisdiction still
+   needs confirmation.
+
+Q15. Why do both authority and citizen upload a resolution photo?
+A. The two photos give a clearer public record of the claimed fix. In this
+   demo they are required before the status becomes Resolved, but identity
+   and photo authenticity are not verified yet.
+
+Q16. Are the resolved sample photos real?
+A. No. They are generated demo examples and are labelled as fictional. New
+   uploads from a user are displayed separately as submitted evidence.
+
+Q17. Does Kannada selection translate citizen reports?
+A. No. It changes interface wording. Names, numbers, locations, and text
+   entered by people remain as they were.
+
+Q18. Can you collect issues automatically from Reddit or Instagram?
+A. Not in the current version. That would need approved platform access,
+   privacy handling, and human checking. The old manual lead form was removed.
+
+Q19. What if a social post only says "near Silk Board"?
+A. That is only an approximate area. It should be marked as unverified and
+   checked on the ground before treating it as an exact case location.
+
+Q20. Where is the data stored?
+A. In this browser's local storage. It survives reloads here, but does not
+   automatically appear on another device. A pilot needs a shared database.
+
+Q21. Why is there no login for authority users?
+A. This is a hackathon demo. Real authority access must have verified staff
+   accounts and permissions before public use.
+
+Q22. What is the main benefit for a city team?
+A. A team sees one ranked queue, repeated complaints linked together, a map
+   of problem locations, and a visible history of actions and evidence.
+
+Q23. How would you measure success in a pilot?
+A. Measure time from report to triage, duplicate reduction, time to repair,
+   number of reopened cases, and citizen confirmation of fixes. Compare these
+   with the current process rather than claiming impact from demo data.
+
+Q24. What are the most important next improvements?
+A. Shared database storage, real authentication, official agency workflow,
+   tested AI accuracy, safer duplicate review, better location checks, and
+   notifications.
+
+
+16. SHORT GLOSSARY
+------------------
+Case: The main record for one city problem.
+Report: One person's description of that problem.
+Report receipt: The reference for that individual submission.
+Priority score: A 0-100 demo number used to sort cases, with visible factors.
+Duplicate: A new report that belongs to an existing case.
+Routing: Suggesting which department should handle a case.
+Hotspot: An area with a concentration of mapped cases or reports.
+After-photo: A photo submitted after repair work is claimed to be complete.
+Ollama: Software that runs an AI language model on the local computer.
+Fallback: A simpler method used when the preferred method is unavailable.
+MVP: Minimum viable product, the first complete working version of an idea.
+
+END OF PROJECT EXPLANATION

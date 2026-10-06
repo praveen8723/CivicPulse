@@ -1,0 +1,11 @@
+node_modules/
+.next/
+.env*
+!.env.example
+*.tsbuildinfo
+test-results/
+playwright-report/
+.video-work/
+.netlify/
+Screenshot 2026-10-06 201638.png
+cyberdefend-space-operations-ui-ux-design-1440x881.png

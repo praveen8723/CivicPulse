@@ -1,0 +1,2064 @@
+# CivicPulse
+## AI That Prioritizes City Problems
+
+Build a complete, responsive web application called **CivicPulse** for the WEBNOVA hackathon.
+
+CivicPulse is an AI-assisted civic issue reporting and management platform. Citizens can report problems such as potholes, garbage accumulation, water leakage, broken streetlights, drainage problems, damaged roads, fallen trees, traffic-signal failures, and similar public infrastructure problems.
+
+The platform analyzes each complaint, determines what kind of issue it is, estimates its severity, checks whether the same problem has already been reported nearby, routes it to the correct civic department, places it on a city map, and tracks the problem until it is resolved.
+
+The product should feel like something a real municipal authority could pilot, not a generic hackathon dashboard.
+
+---
+
+# 1. Main Goal
+
+The core workflow is:
+
+Citizen reports issue  
+→ AI analyses complaint  
+→ Issue category detected  
+→ Severity calculated  
+→ Possible duplicate complaints detected  
+→ Correct department selected  
+→ Complaint registered  
+→ Issue appears on city map  
+→ Department updates status  
+→ Citizen tracks progress  
+→ Issue is resolved
+
+The application should demonstrate this entire workflow visually.
+
+---
+
+# 2. Product Roles
+
+There are two primary user experiences.
+
+## Citizen
+
+Citizens should be able to:
+
+- report civic issues
+- upload a photo
+- describe the problem using text
+- optionally record/use voice input
+- specify or detect location
+- receive an AI-generated issue classification
+- receive a complaint tracking ID
+- see whether their complaint was merged with an existing issue
+- track complaint status
+- browse reported problems on the city map
+- view resolution progress
+
+## Civic Authority
+
+Authority users should have a dedicated dashboard where they can:
+
+- view all complaints
+- see high-priority problems
+- filter complaints
+- inspect AI classification
+- inspect severity score
+- see duplicate-report counts
+- see issue hotspots
+- change complaint status
+- assign complaints to departments
+- view department workload
+- monitor resolution performance
+
+For the hackathon, authentication can be simulated or simplified.
+
+A visible **Citizen View / Authority View** switch is acceptable.
+
+---
+
+# 3. Design Direction
+
+The website should look modern, trustworthy, professional, civic-focused, and premium.
+
+Do NOT make it look like a stereotypical AI website.
+
+Avoid:
+
+- excessive gradients
+- glowing neon everywhere
+- giant AI robot illustrations
+- unnecessary glassmorphism
+- random floating elements
+- excessive animations
+- generic SaaS landing-page sections
+
+Use a design language closer to a modern smart-city command centre.
+
+Suggested visual character:
+
+- clean light interface
+- deep navy / charcoal text
+- off-white or very light grey backgrounds
+- civic blue as primary accent
+- green for resolved/safe states
+- amber for medium warnings
+- orange/red for high and critical issues
+- subtle borders
+- soft shadows
+- rounded but not overly rounded cards
+- strong typography
+- excellent spacing
+
+The UI should still look impressive enough for a national-level hackathon.
+
+Use meaningful motion only:
+
+- page transitions
+- status changes
+- map marker interactions
+- complaint submission progress
+- number counters
+- dashboard chart transitions
+- small hover interactions
+
+Keep animations fast and subtle.
+
+---
+
+# 4. Application Structure
+
+Create the following major areas.
+
+## A. Landing Page
+
+Route:
+
+`/`
+
+The landing page should immediately explain CivicPulse.
+
+Hero content:
+
+**CivicPulse**
+
+**AI That Prioritizes City Problems**
+
+Suggested supporting text:
+
+"CivicPulse turns everyday civic complaints into actionable city intelligence. Report an issue, let AI classify and prioritize it, and follow its journey from report to resolution."
+
+Primary CTA:
+
+**Report an Issue**
+
+Secondary CTA:
+
+**Explore Live City Map**
+
+Include a small visual workflow:
+
+Report  
+→ Analyse  
+→ Prioritize  
+→ Route  
+→ Resolve
+
+Also show a few live-looking city statistics such as:
+
+- 1,248 Issues Reported
+- 846 Resolved
+- 72 Active Today
+- 91% Routing Accuracy
+
+These can come from seeded demo data.
+
+Do not make the landing page unnecessarily long.
+
+The actual product should be the focus.
+
+---
+
+# 5. Citizen Dashboard
+
+Route:
+
+`/citizen`
+
+Show a welcoming citizen dashboard.
+
+Main sections:
+
+### Quick Actions
+
+- Report Issue
+- Track Complaint
+- View City Map
+
+### My Recent Complaints
+
+Show several example complaints.
+
+Each complaint card should display:
+
+- complaint ID
+- issue category
+- location
+- date
+- severity
+- current status
+- progress indicator
+
+Example:
+
+CP-2026-1048  
+Large pothole near school  
+High Severity  
+Assigned  
+Ward 14, MG Road
+
+### Nearby Issues
+
+Show issues within the user's approximate area.
+
+### Community Impact
+
+Example:
+
+"Your reports contributed to 4 resolved civic problems."
+
+This provides a sense of citizen participation.
+
+---
+
+# 6. Complaint Submission Experience
+
+Route:
+
+`/report`
+
+This is one of the most important parts of the application.
+
+Create a polished multi-step reporting flow.
+
+## Step 1 — Tell Us What Happened
+
+Allow:
+
+### Photo Upload
+
+User can:
+
+- drag and drop image
+- browse files
+- preview uploaded image
+
+Supported demo categories may include:
+
+- potholes
+- garbage
+- water leakage
+- streetlight damage
+- road damage
+- drainage overflow
+- fallen trees
+- traffic signal problems
+
+### Text Description
+
+Textarea placeholder:
+
+"Describe the issue. For example: A large pothole has formed near the school entrance and vehicles are swerving around it."
+
+### Voice Input
+
+Include a microphone button.
+
+If browser speech recognition is available, use it to convert speech into text.
+
+If unsupported, gracefully disable it with a useful explanation.
+
+Do not allow the feature to break the submission flow.
+
+---
+
+# 7. Location Selection
+
+## Step 2 — Location
+
+Provide:
+
+**Use My Location**
+
+Use browser geolocation when permission is granted.
+
+Also allow manual location input.
+
+Show a mini interactive map with a draggable marker if practical.
+
+Display:
+
+- formatted location
+- latitude
+- longitude
+
+For demo purposes, default the map around **Bengaluru, Karnataka** if no location has been selected.
+
+Do not depend on exact real-time location for the app to work.
+
+---
+
+# 8. AI Analysis Screen
+
+## Step 3 — AI Analysis
+
+After the user submits the issue details, show an analysis state.
+
+Use a short sequence such as:
+
+Analysing report...
+
+then reveal results progressively.
+
+Example result:
+
+Detected Issue  
+**Pothole / Road Damage**
+
+Confidence  
+**94%**
+
+Severity  
+**High**
+
+Recommended Department  
+**Roads & Infrastructure Department**
+
+Possible Duplicate  
+**3 similar reports found nearby**
+
+AI Summary  
+"Large road surface failure located near a high-traffic school zone. The issue presents a significant vehicle and pedestrian safety risk."
+
+Show a small note:
+
+"AI recommendations can be reviewed by civic authorities."
+
+Do not pretend AI is infallible.
+
+---
+
+# 9. AI Issue Detection
+
+Create a reusable classification module.
+
+Supported categories:
+
+- Pothole
+- Road Damage
+- Garbage / Waste
+- Water Leakage
+- Drainage / Sewage
+- Broken Streetlight
+- Fallen Tree
+- Traffic Signal
+- Public Property Damage
+- Other
+
+The application should derive a category from:
+
+- complaint description
+- image metadata/analysis if AI integration is available
+- keywords as fallback
+
+Create the implementation through a service abstraction.
+
+For example:
+
+`services/issueClassifier.ts`
+
+Do not tightly couple components to a specific AI vendor.
+
+If an AI API key is available, the service may use it.
+
+If it is unavailable, provide a deterministic local fallback so the hackathon demo still works.
+
+The fallback should classify common descriptions based on useful keyword groups.
+
+---
+
+# 10. Severity Detection
+
+Each issue should have:
+
+- Low
+- Medium
+- High
+- Critical
+
+Also maintain an internal numeric priority score from 0–100.
+
+Do not randomly assign severity.
+
+Calculate it using understandable factors.
+
+Example model:
+
+Base issue risk  
++ public safety impact  
++ affected-area importance  
++ duplicate-report volume  
++ age of unresolved issue  
++ keywords indicating danger
+
+Example:
+
+Traffic signal not working at major intersection:
+
+Base risk = 60  
+Traffic/safety keyword = +15  
+High-density location = +10  
+5 duplicate reports = +8
+
+Priority Score = 93
+
+Severity = Critical
+
+Suggested thresholds:
+
+0–29 → Low  
+30–54 → Medium  
+55–79 → High  
+80–100 → Critical
+
+Show the score where appropriate in the authority interface.
+
+Citizens mostly need the severity label.
+
+---
+
+# 11. Smart Priority Score
+
+Create a CivicPulse-specific feature called:
+
+## Civic Priority Score
+
+This should make the project stand out from a normal complaint portal.
+
+Score civic issues based on:
+
+- severity
+- number of citizens reporting the same issue
+- age of complaint
+- safety risk
+- proximity to important locations
+- department response time
+
+Display something like:
+
+**Civic Priority Score: 87 / 100**
+
+Add a tooltip explaining:
+
+"This score helps authorities prioritize issues based on urgency, public impact and community reports."
+
+Do not present it as an official government metric.
+
+---
+
+# 12. Duplicate Detection
+
+When a new complaint is submitted, attempt to find similar existing reports.
+
+Compare:
+
+- issue category
+- geographic distance
+- text similarity
+- submission time
+
+For the demo implementation, duplicate detection can use:
+
+same category  
+AND  
+location within approximately 100–250 metres  
+AND  
+reasonable similarity in complaint description
+
+If a duplicate exists, do NOT create an entirely separate issue case.
+
+Instead create a citizen report linked to the existing master issue.
+
+Example UI:
+
+**Similar Issue Found**
+
+"This problem has already been reported by 6 citizens."
+
+**We've added your report to the existing case.**
+
+Issue:
+
+CP-2026-0892
+
+Show:
+
+7 Citizens Reported This
+
+This feature should be highly visible during the demo.
+
+---
+
+# 13. Community Confirmation
+
+Add an optional innovative feature.
+
+Citizens viewing an issue can click:
+
+**I'm affected too**
+
+This increases the community report count without creating another duplicate complaint.
+
+This number can influence the Civic Priority Score.
+
+Example:
+
+23 citizens affected
+
+This turns duplicate reporting into useful civic evidence.
+
+---
+
+# 14. Department Routing
+
+Map complaint categories automatically.
+
+Example routing:
+
+Pothole  
+→ Roads & Infrastructure
+
+Road Damage  
+→ Roads & Infrastructure
+
+Garbage  
+→ Solid Waste Management
+
+Water Leakage  
+→ Water Supply Department
+
+Drainage / Sewage  
+→ Sewerage & Drainage
+
+Broken Streetlight  
+→ Electrical / Street Lighting
+
+Fallen Tree  
+→ Parks / Urban Forestry
+
+Traffic Signal  
+→ Traffic Management
+
+Public Property Damage  
+→ Municipal Maintenance
+
+Other  
+→ Civic Support Desk
+
+Store routing rules in one maintainable configuration file.
+
+Do not scatter routing logic throughout components.
+
+---
+
+# 15. Complaint Confirmation
+
+After analysis, show a polished success screen.
+
+Example:
+
+✓ Complaint Registered
+
+Tracking ID:
+
+**CP-2026-1048**
+
+Detected:
+
+Pothole
+
+Severity:
+
+High
+
+Assigned To:
+
+Roads & Infrastructure
+
+Status:
+
+Reported
+
+Include buttons:
+
+**Track Complaint**
+
+**View on Map**
+
+**Report Another Issue**
+
+If merged with another issue, clearly explain this instead of pretending a new independent issue was created.
+
+---
+
+# 16. Complaint Tracking
+
+Route:
+
+`/track`
+
+Allow users to enter complaint ID.
+
+Also support:
+
+`/track/[id]`
+
+Display complaint overview and a vertical or horizontal timeline.
+
+Required statuses:
+
+**Reported → Assigned → In Progress → Resolved**
+
+Show completed statuses visually.
+
+Example:
+
+Reported  
+12:42 PM  
+Complaint received and analysed.
+
+Assigned  
+12:43 PM  
+Sent to Roads & Infrastructure Department.
+
+In Progress  
+2:20 PM  
+Maintenance crew assigned.
+
+Resolved  
+Pending
+
+Include:
+
+- complaint photo
+- issue description
+- department
+- severity
+- Civic Priority Score
+- date reported
+- location
+- duplicate/community report count
+- map preview
+
+When resolved, optionally display:
+
+- resolution date
+- resolution note
+- after photo
+
+---
+
+# 17. Live City Map
+
+Route:
+
+`/map`
+
+Create a full interactive city issue map.
+
+Use a library such as:
+
+- Leaflet
+- React Leaflet
+
+Use an OpenStreetMap-compatible tile solution suitable for the demo.
+
+Map should contain markers representing complaints.
+
+Marker appearance should correspond to severity.
+
+Low  
+→ subtle/green
+
+Medium  
+→ yellow/amber
+
+High  
+→ orange
+
+Critical  
+→ red
+
+Resolved issues can use a muted green/check marker.
+
+Clicking a marker should open a compact popup containing:
+
+- category
+- issue title
+- severity
+- status
+- number of reports
+- View Details
+
+---
+
+# 18. Heatmap
+
+Provide a toggle:
+
+**Markers | Heatmap**
+
+Heatmap should highlight areas containing many reported problems.
+
+For a lightweight hackathon implementation, use either:
+
+- a Leaflet heatmap plugin
+
+or
+
+- clustered markers with a visual density representation
+
+The feature should still work smoothly on normal laptops and phones.
+
+---
+
+# 19. Map Filters
+
+Provide useful filters:
+
+Category
+
+- All
+- Roads
+- Garbage
+- Water
+- Lighting
+- Drainage
+- Traffic
+- Other
+
+Severity
+
+- Low
+- Medium
+- High
+- Critical
+
+Status
+
+- Reported
+- Assigned
+- In Progress
+- Resolved
+
+Also include:
+
+**Show unresolved only**
+
+---
+
+# 20. Authority Dashboard
+
+Route:
+
+`/authority`
+
+This should be the strongest dashboard in the project.
+
+Top-level metrics:
+
+### Total Complaints
+Example: 1,248
+
+### Active Issues
+Example: 302
+
+### Resolved Issues
+Example: 846
+
+### Critical Issues
+Example: 17
+
+### Average Resolution Time
+Example: 18.4 hrs
+
+### Duplicate Reports Merged
+Example: 218
+
+Use believable demo data rather than perfectly rounded values.
+
+---
+
+# 21. Authority Dashboard Visualizations
+
+Include useful charts.
+
+### Complaint Trend
+
+Line or area chart showing complaints over the last 7/14/30 days.
+
+### Issue Categories
+
+Donut/bar chart:
+
+- Road damage
+- Garbage
+- Water
+- Streetlights
+- Drainage
+- Traffic
+- Other
+
+### Severity Distribution
+
+Show:
+
+Low  
+Medium  
+High  
+Critical
+
+### Department Workload
+
+Horizontal bar chart displaying number of active issues by department.
+
+### Resolution Performance
+
+Show percentage resolved and average response time.
+
+Use a charting library such as Recharts.
+
+Do not add charts merely for decoration.
+
+Every chart should communicate something useful.
+
+---
+
+# 22. Priority Queue
+
+Create a section called:
+
+## Priority Queue
+
+Display the highest-priority unresolved civic issues.
+
+Columns:
+
+- Priority
+- Issue ID
+- Issue
+- Location
+- Severity
+- Reports
+- Department
+- Age
+- Status
+- Action
+
+Sort primarily using Civic Priority Score.
+
+Example:
+
+96  
+CP-2026-0972  
+Traffic Signal Failure  
+Silk Board Junction  
+Critical  
+18 reports  
+Traffic Management  
+3h  
+Assigned
+
+Make the first few critical issues visually prominent without making the table messy.
+
+---
+
+# 23. Complaint Management
+
+Route:
+
+`/authority/issues`
+
+Create a searchable, filterable complaint table.
+
+Filters:
+
+- category
+- severity
+- department
+- status
+- date
+- ward/location
+
+Search should support:
+
+- complaint ID
+- location
+- description
+
+Clicking an issue opens:
+
+`/authority/issues/[id]`
+
+---
+
+# 24. Authority Issue Detail
+
+Show:
+
+- uploaded citizen photo
+- complaint description
+- detected category
+- AI confidence
+- AI summary
+- severity
+- Civic Priority Score
+- location map
+- duplicate reports
+- community confirmations
+- assigned department
+- complaint timeline
+- internal notes
+- status management
+
+Authority should be able to change:
+
+Reported  
+→ Assigned  
+→ In Progress  
+→ Resolved
+
+Add a confirmation before marking an issue resolved.
+
+Allow an optional resolution note such as:
+
+"Damaged road section repaired and surface levelled."
+
+Allow an optional after/resolution photo.
+
+---
+
+# 25. Hotspot Intelligence
+
+Create a dashboard section:
+
+## Emerging Hotspots
+
+Examples:
+
+Koramangala 5th Block  
+12 road-related reports this week
+
+Indiranagar  
+9 water leakage reports
+
+BTM Layout  
+14 waste management complaints
+
+Include a small map or ranked list.
+
+Add an insight such as:
+
+"Road-related complaints in Ward 68 increased 34% compared with the previous 7-day period."
+
+This can be generated from seeded data.
+
+Do not claim the data is real Bengaluru government data.
+
+Label demo information appropriately where necessary.
+
+---
+
+# 26. AI Insights
+
+Add a small section on the authority dashboard:
+
+## CivicPulse Insights
+
+Example insight cards:
+
+**Growing Road Issue Cluster**
+
+"Road damage complaints around Koramangala increased significantly over the last seven days."
+
+**Potential Infrastructure Pattern**
+
+"4 water leakage complaints were detected within a 600 m radius."
+
+**Resolution Bottleneck**
+
+"Streetlight complaints currently have the longest average resolution time."
+
+These insights can initially be generated from data rules rather than requiring an LLM.
+
+The important part is that they should come from the application data.
+
+---
+
+# 27. Before / After Resolution
+
+For resolved complaints, support:
+
+Before image
+
+→
+
+After image
+
+This creates a visually compelling proof-of-resolution feature.
+
+Display this on resolved complaint details.
+
+It is especially useful during the hackathon presentation.
+
+---
+
+# 28. Transparency and Trust
+
+Provide a simple public transparency section.
+
+Example metrics:
+
+86% issues resolved this month
+
+18.4 hour average response time
+
+218 duplicate reports consolidated
+
+57 high-priority issues resolved
+
+Do not invent official government claims.
+
+Treat all values as application/demo statistics.
+
+---
+
+# 29. Suggested Navigation
+
+Desktop navigation:
+
+CivicPulse logo
+
+Home
+
+Report Issue
+
+City Map
+
+Track Complaint
+
+Dashboard
+
+Use a **Citizen / Authority** toggle where useful.
+
+Mobile navigation should collapse naturally.
+
+Do not squeeze desktop navigation into mobile width.
+
+---
+
+# 30. Recommended Technology
+
+Use:
+
+### Frontend
+
+- Next.js
+- TypeScript
+- React
+- Tailwind CSS
+
+### Components
+
+A lightweight accessible component system may be used, but customise components so the application does not look like an untouched component library.
+
+### Icons
+
+Lucide icons.
+
+### Charts
+
+Recharts.
+
+### Maps
+
+React Leaflet / Leaflet.
+
+### Storage
+
+Design the data-access layer so it can work with Supabase.
+
+For the initial hackathon build, the project must also be able to run with seeded/local data without requiring database setup.
+
+Do not make the entire website unusable when environment variables are missing.
+
+---
+
+# 31. Data Model
+
+Create appropriate TypeScript interfaces/types.
+
+## Issue
+
+Suggested fields:
+
+```ts
+id
+title
+description
+category
+severity
+priorityScore
+status
+department
+latitude
+longitude
+address
+ward
+imageUrl
+resolutionImageUrl
+createdAt
+updatedAt
+resolvedAt
+aiConfidence
+aiSummary
+duplicateCount
+communityConfirmations
+reporterCount
+```
+
+## CitizenReport
+
+```ts
+id
+issueId
+description
+imageUrl
+latitude
+longitude
+createdAt
+reporterName
+contact
+```
+
+## IssueStatusHistory
+
+```ts
+id
+issueId
+status
+timestamp
+note
+```
+
+## Department
+
+```ts
+id
+name
+activeIssues
+resolvedIssues
+averageResolutionTime
+```
+
+Types may be improved if the implementation benefits from a better structure.
+
+Do not blindly duplicate data unnecessarily.
+
+---
+
+# 32. Seed Data
+
+Create believable demo data containing at least 30–50 civic issues.
+
+Use Bengaluru-style sample locations such as:
+
+- Koramangala
+- Indiranagar
+- HSR Layout
+- Jayanagar
+- BTM Layout
+- MG Road
+- Whitefield
+- Electronic City
+- JP Nagar
+- Malleshwaram
+- Bellandur
+
+Use coordinates that place markers reasonably around Bengaluru.
+
+Include a mix of:
+
+- categories
+- severities
+- statuses
+- creation dates
+- departments
+- duplicate counts
+- report counts
+
+Make the data imperfect and realistic.
+
+Examples:
+
+some locations have multiple related complaints
+
+some departments have larger backlogs
+
+some complaints remain unresolved longer
+
+some critical problems have many community reports
+
+Avoid patterns such as exactly:
+
+10  
+20  
+30  
+40
+
+for every statistic.
+
+---
+
+# 33. Demo Mode
+
+This is important.
+
+The project must have a reliable demo mode.
+
+A judge should be able to:
+
+1. open CivicPulse
+2. click Report Issue
+3. upload/select a pothole image
+4. type a description
+5. choose a location
+6. submit
+7. watch AI analysis
+8. see category and severity
+9. see a duplicate match if applicable
+10. receive complaint ID
+11. open the complaint tracker
+12. see it on the map
+13. switch to Authority Dashboard
+14. locate the complaint
+15. update its status
+16. see that status reflected in tracking
+
+This should work even when external AI/database services are unavailable.
+
+---
+
+# 34. Demo Scenario
+
+Seed one particularly polished scenario.
+
+Existing issue:
+
+**CP-2026-0892**
+
+Title:
+
+Large pothole near school entrance
+
+Category:
+
+Pothole
+
+Severity:
+
+High
+
+Priority Score:
+
+84
+
+Department:
+
+Roads & Infrastructure
+
+Location:
+
+Koramangala
+
+Existing reports:
+
+6
+
+Status:
+
+Assigned
+
+When a demo user reports:
+
+"Large pothole outside the school. Cars are swerving and it is dangerous for students."
+
+at approximately the same location, duplicate detection should recognize the match.
+
+Show:
+
+**Existing Issue Detected**
+
+"6 citizens have already reported this problem."
+
+Then increment it to:
+
+**7 citizen reports**
+
+and attach the new report to CP-2026-0892.
+
+This will make duplicate detection easy to demonstrate to judges.
+
+---
+
+# 35. Loading and Empty States
+
+Every major screen should have thoughtful:
+
+- loading states
+- empty states
+- error states
+
+Examples:
+
+"No complaints match these filters."
+
+"No issues have been reported in this area."
+
+"We couldn't access your location. You can select it manually."
+
+Avoid blank pages.
+
+---
+
+# 36. Responsive Behaviour
+
+Mobile experience is important because citizens are likely to report problems using phones.
+
+The report flow should work especially well on mobile.
+
+On smaller screens:
+
+- cards stack vertically
+- map remains usable
+- tables become cards or horizontally scroll safely
+- CTAs remain reachable
+- forms use full available width
+- image upload is touch friendly
+
+Test approximately:
+
+375px  
+768px  
+1024px  
+1440px
+
+---
+
+# 37. Accessibility
+
+Use:
+
+- semantic HTML
+- proper labels
+- keyboard navigation
+- readable contrast
+- focus states
+- appropriate ARIA attributes
+- meaningful alt text
+
+Do not encode severity only through colour.
+
+Always display labels such as:
+
+Critical
+
+High
+
+Medium
+
+Low
+
+---
+
+# 38. Performance
+
+Avoid unnecessarily heavy dependencies.
+
+Lazy-load the map when appropriate.
+
+Optimise uploaded images/previews.
+
+Avoid enormous animation libraries.
+
+Avoid repeated unnecessary requests.
+
+Use memoization only where there is an actual reason.
+
+Do not prematurely optimise straightforward UI code.
+
+---
+
+# 39. Code Quality
+
+This requirement is important.
+
+Write the repository as if it were built and maintained by a competent human developer.
+
+The code should be:
+
+- clear
+- readable
+- consistent
+- modular
+- practical
+- easy to explain during a hackathon
+- appropriately typed
+- not over-engineered
+
+Use meaningful names.
+
+Good:
+
+```ts
+findNearbyDuplicates()
+calculatePriorityScore()
+routeIssueToDepartment()
+getIssueStatusHistory()
+```
+
+Bad:
+
+```ts
+processData()
+handleThing()
+doAIStuff()
+executeLogic()
+```
+
+Components should have clear responsibilities.
+
+Avoid giant files containing unrelated logic.
+
+At the same time, do NOT create dozens of tiny abstractions for simple one-line operations.
+
+Prefer straightforward code.
+
+---
+
+# 40. Comments Must Feel Natural
+
+Comments should be written only when they help another developer understand:
+
+- why something is implemented a certain way
+- a non-obvious edge case
+- an unusual decision
+- temporary demo behaviour
+
+Do NOT comment obvious code.
+
+Bad:
+
+```ts
+// Set status to resolved
+issue.status = "resolved";
+```
+
+Bad:
+
+```ts
+// This function calculates the priority score
+function calculatePriorityScore() {}
+```
+
+Better:
+
+```ts
+// Repeated reports increase priority, but cap the contribution so
+// a viral complaint does not automatically become critical.
+```
+
+Avoid excessive JSDoc on obvious functions.
+
+Avoid comments such as:
+
+```ts
+// AI generated logic
+// Generated by Codex
+// This code handles...
+// This component is responsible for...
+```
+
+Do not write robotic tutorial-style comments throughout production code.
+
+Comments should be occasional and useful.
+
+---
+
+# 41. Natural Coding Style
+
+Do not deliberately add mistakes, inconsistent formatting, or poor practices just to appear human-written.
+
+Instead make the code feel naturally authored through:
+
+- consistent naming
+- sensible file organisation
+- practical abstractions
+- short useful comments
+- domain-specific variable names
+- simple implementations where simple implementations are enough
+- reusable logic where reuse actually exists
+
+Avoid repeated boilerplate.
+
+Avoid adding five layers of abstraction around simple operations.
+
+Avoid generic placeholder names.
+
+Avoid excessively verbose variable names.
+
+Avoid huge comments explaining basic React or JavaScript behaviour.
+
+---
+
+# 42. UI Copy
+
+Avoid robotic phrases.
+
+Bad:
+
+"Your complaint has been successfully processed by our artificial intelligence system."
+
+Better:
+
+"Report received. We've classified the issue and sent it to the right department."
+
+Bad:
+
+"AI processing completed successfully."
+
+Better:
+
+"Analysis complete."
+
+Bad:
+
+"Utilize artificial intelligence to revolutionize urban complaint management."
+
+Better:
+
+"Report city problems. Help authorities fix what matters first."
+
+Keep language short and natural.
+
+---
+
+# 43. Reusable Components
+
+Create reusable components where they provide real value.
+
+Potential components:
+
+```txt
+AppHeader
+MobileNavigation
+MetricCard
+SeverityBadge
+StatusBadge
+IssueCard
+IssueTable
+IssueMap
+IssueMarker
+ComplaintTimeline
+PriorityScore
+DepartmentBadge
+ImageUploader
+LocationPicker
+AnalysisResult
+DuplicateAlert
+FilterBar
+EmptyState
+LoadingState
+InsightCard
+```
+
+Do not force every UI fragment into its own component.
+
+---
+
+# 44. Suggested Project Structure
+
+A reasonable structure could be:
+
+```txt
+app/
+  page.tsx
+
+  citizen/
+    page.tsx
+
+  report/
+    page.tsx
+
+  track/
+    page.tsx
+    [id]/
+      page.tsx
+
+  map/
+    page.tsx
+
+  authority/
+    page.tsx
+    issues/
+      page.tsx
+      [id]/
+        page.tsx
+
+components/
+  dashboard/
+  issues/
+  map/
+  report/
+  shared/
+
+lib/
+  priority.ts
+  duplicateDetection.ts
+  departmentRouting.ts
+  issueClassification.ts
+  demoData.ts
+  utils.ts
+
+services/
+  ai/
+  issues/
+
+types/
+  civic.ts
+```
+
+Adjust this structure when better organisation becomes obvious during implementation.
+
+---
+
+# 45. AI Service Architecture
+
+Create a small abstraction such as:
+
+```ts
+interface IssueAnalysisResult {
+  category: IssueCategory;
+  confidence: number;
+  severity: Severity;
+  summary: string;
+}
+```
+
+Provide something like:
+
+```ts
+analyzeIssue({
+  description,
+  image
+})
+```
+
+Internally this should choose between:
+
+1. configured AI service
+2. local deterministic fallback
+
+Do not expose secret API keys to the browser.
+
+External AI requests should go through server-side routes/actions.
+
+---
+
+# 46. Duplicate Detection Logic
+
+Implement an understandable scoring system.
+
+Example factors:
+
+Category match  
++40
+
+Within 100 m  
++35
+
+Within 250 m  
++20
+
+Text similarity above threshold  
++25
+
+Reported within recent time window  
++10
+
+If similarity score crosses the duplicate threshold, return the likely existing issue.
+
+Keep constants in one place so they can be tuned.
+
+---
+
+# 47. Priority Calculation
+
+Create a deterministic function.
+
+Conceptually:
+
+```txt
+Priority =
+severity weight
++ duplicate/report volume
++ issue age
++ safety indicators
++ location importance
+```
+
+Clamp result from:
+
+0–100
+
+The function should produce predictable results.
+
+Do not use random numbers for priority.
+
+---
+
+# 48. Status Simulation
+
+For hackathon demo mode, authority status changes should immediately update the complaint tracker.
+
+If using browser/local storage, centralise storage logic.
+
+If using Supabase, updates should persist through the database.
+
+Do not hard-code different status values independently in multiple screens.
+
+---
+
+# 49. Notifications
+
+Add simple in-app notification/toast behaviour.
+
+Examples:
+
+"Complaint CP-2026-1048 created."
+
+"Complaint routed to Roads & Infrastructure."
+
+"Status updated to In Progress."
+
+"Your report was merged with an existing issue."
+
+Keep notifications concise.
+
+---
+
+# 50. Optional Feature — Citizen Updates
+
+Add a simple simulated notification preference:
+
+**Notify me when this issue changes**
+
+This may use:
+
+- email field
+- phone field
+
+Actual SMS/email delivery is not required for the hackathon unless easy to configure.
+
+The UI can demonstrate the intended feature.
+
+---
+
+# 51. Optional Feature — Ward Intelligence
+
+If time permits, group complaints by ward.
+
+Show:
+
+Ward 68  
+43 Active Issues  
+7 Critical  
+72% Resolved
+
+This could become a useful authority-level comparison.
+
+Do not prioritise this over core workflow functionality.
+
+---
+
+# 52. Important Demo Interactions
+
+The following interactions must actually work:
+
+- report form
+- photo preview
+- text description
+- geolocation/manual location
+- AI/demo analysis
+- severity calculation
+- department routing
+- duplicate detection
+- complaint creation
+- complaint tracking
+- map filtering
+- issue marker popup
+- dashboard filtering
+- authority status updates
+- Civic Priority Score
+- citizen affected/report count
+
+Do not create buttons that do nothing.
+
+If a visible feature is not implemented, either implement it or remove it.
+
+---
+
+# 53. First-Run Experience
+
+When someone clones the project:
+
+```bash
+npm install
+npm run dev
+```
+
+should launch a useful demo wherever reasonably possible.
+
+Provide:
+
+`.env.example`
+
+Do not commit secrets.
+
+External integrations should enhance the project rather than prevent it from launching.
+
+---
+
+# 54. README
+
+Create a polished but concise README.
+
+Include:
+
+- project description
+- core problem
+- CivicPulse solution
+- major features
+- architecture overview
+- technology stack
+- setup
+- optional environment variables
+- demo workflow
+- screenshots placeholder section
+- future improvements
+
+Do not fill the README with unnecessary marketing language.
+
+---
+
+# 55. Hackathon Presentation Readiness
+
+Build the interface so we can demonstrate CivicPulse in approximately 3–5 minutes.
+
+Ideal demonstration:
+
+1. Show city dashboard.
+2. Point out active and critical problems.
+3. Open the live map.
+4. Report a pothole.
+5. Show AI classification.
+6. Show High severity.
+7. Demonstrate duplicate detection.
+8. Show automatic Roads Department routing.
+9. Open complaint tracker.
+10. Switch to authority dashboard.
+11. Show the issue in Priority Queue.
+12. Change status to In Progress.
+13. Return to tracker and show updated status.
+14. Finish with hotspot/AI insights.
+
+The UI should make this demo flow obvious without requiring explanation of where features are hidden.
+
+---
+
+# 56. Product Differentiators
+
+Make these CivicPulse's major differentiators visible in the UI:
+
+### 1. Civic Priority Score
+
+Authorities know what should be fixed first.
+
+### 2. Smart Duplicate Detection
+
+Hundreds of complaints about one pothole become one actionable case instead of hundreds of tickets.
+
+### 3. Community Impact
+
+Multiple affected citizens strengthen the priority of an issue.
+
+### 4. Hotspot Intelligence
+
+The system detects areas where infrastructure problems are clustering.
+
+### 5. End-to-End Transparency
+
+Citizens can see an issue move from:
+
+Reported  
+→ Assigned  
+→ In Progress  
+→ Resolved
+
+The project should communicate that CivicPulse is not just a reporting form.
+
+It is a **city problem prioritisation system**.
+
+---
+
+# 57. Key Homepage Message
+
+Use this concept prominently:
+
+## Cities don't need more complaints.
+## They need to know what to fix first.
+
+Supporting copy:
+
+"CivicPulse combines citizen reports, location data and intelligent prioritisation to help city teams respond to the problems that matter most."
+
+This can be the main storytelling direction.
+
+---
+
+# 58. Product Branding
+
+Brand name:
+
+**CivicPulse**
+
+Tagline:
+
+**AI That Prioritizes City Problems**
+
+Use a simple logo concept involving one of:
+
+- map pin + pulse
+- city grid + pulse
+- civic pin + check
+- abstract C + location marker
+
+Keep branding professional and simple.
+
+Do not use a robot icon.
+
+---
+
+# 59. Final Quality Requirements
+
+Before considering the project complete:
+
+Check that:
+
+- there are no broken links
+- there are no dead buttons
+- there are no obvious placeholder texts
+- there are no console errors during normal use
+- map renders correctly
+- charts resize correctly
+- mobile layout works
+- complaint tracking works
+- duplicate detection can be demonstrated
+- status changes propagate correctly
+- seeded statistics are internally believable
+- severity colours are consistent
+- status labels are consistent
+- TypeScript compiles
+- production build succeeds
+
+Run lint/type/build checks and resolve meaningful errors.
+
+Do not leave the repository in a partially scaffolded state.
+
+---
+
+# 60. Implementation Priority
+
+Build features in this order:
+
+### Priority 1 — Core Experience
+
+- shared design system
+- demo data
+- complaint submission
+- issue classification
+- severity calculation
+- department routing
+- complaint creation
+- tracking
+
+### Priority 2 — Civic Intelligence
+
+- duplicate detection
+- Civic Priority Score
+- community reports
+- map
+- filters
+
+### Priority 3 — Authority Experience
+
+- authority dashboard
+- priority queue
+- charts
+- issue management
+- status updating
+
+### Priority 4 — Polish
+
+- hotspot intelligence
+- before/after
+- insights
+- animations
+- responsive optimisation
+- loading/empty/error states
+
+Do not spend excessive time polishing the landing page while the core product workflow remains incomplete.
+
+---
+
+# 61. Final Instruction to Codex
+
+Do not only generate mockups or static pages.
+
+Implement CivicPulse as a functional application.
+
+Start by inspecting the existing repository before changing anything.
+
+Preserve useful existing code.
+
+Create a coherent design system before building isolated screens.
+
+Work through the implementation systematically.
+
+After each major feature, verify that existing functionality still works.
+
+Use seeded demo data when external infrastructure is unavailable.
+
+Avoid unnecessary dependencies.
+
+Keep the application easy to understand and easy to demo.
+
+Prioritise functionality, visual polish and reliability equally.
+
+The final result should feel like a product a city innovation team could realistically pilot, while still being impressive enough to stand out during a hackathon.
